@@ -1,24 +1,36 @@
 import requests
 
-TALLY_URL = "http://localhost:9000"
+TALLY_URL = "http://192.168.64.2:9000"
 
 def get_stock_summary():
 
     xml_request = """
-    <ENVELOPE>
-     <HEADER>
-      <TALLYREQUEST>Export Data</TALLYREQUEST>
-     </HEADER>
-     <BODY>
-      <EXPORTDATA>
-       <REQUESTDESC>
-        <REPORTNAME>Stock Summary</REPORTNAME>
-       </REQUESTDESC>
-      </EXPORTDATA>
-     </BODY>
-    </ENVELOPE>
+<ENVELOPE>
+ <HEADER>
+  <VERSION>1</VERSION>
+  <TALLYREQUEST>Export</TALLYREQUEST>
+  <TYPE>Collection</TYPE>
+  <ID>StockItems</ID>
+ </HEADER>
+ <BODY>
+  <DESC>
+   <STATICVARIABLES>
+    <SVEXPORTFORMAT>$$SysName:XML</SVEXPORTFORMAT>
+   </STATICVARIABLES>
+   <TDL>
+    <TDLMESSAGE>
+     <COLLECTION NAME="StockItems" ISMODIFY="No">
+      <TYPE>Stock Item</TYPE>
+      <FETCH>Name,OpeningBalance,ClosingBalance,BaseUnits</FETCH>
+     </COLLECTION>
+    </TDLMESSAGE>
+   </TDL>
+  </DESC>
+ </BODY>
+</ENVELOPE>
     """
 
-    response = requests.post(TALLY_URL, data=xml_request)
+    response = requests.post(TALLY_URL, data=xml_request, timeout=10)
+    response.raise_for_status()
 
     return response.text
