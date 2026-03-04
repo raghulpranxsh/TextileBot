@@ -44,7 +44,7 @@ def safe_tally_request(xml_request, target_tag):
     Helper function to safely send request to Tally and handle exceptions.
     """
     try:
-        response = requests.post(TALLY_URL, data=xml_request, timeout=10)
+        return safe_tally_request(xml_request, "LEDGER")
         
         # Check if HTTP request itself failed
         if response.status_code != 200:
@@ -62,6 +62,7 @@ def safe_tally_request(xml_request, target_tag):
         return {"status": "error", "message": "An unexpected error occurred in the connector.", "details": str(e)}
 
 def get_stock_summary():
+
     xml_request = """
 <ENVELOPE>
  <HEADER>
@@ -147,7 +148,8 @@ def get_invoices():
  </BODY>
 </ENVELOPE>
     """
-    return safe_tally_request(xml_request, "VOUCHER")
+    return safe_tally_request(xml_request, "LEDGER")
+    return parse_tally_xml(response.text, "VOUCHER")
 
 def get_purchase_orders():
     xml_request = """
@@ -177,7 +179,8 @@ def get_purchase_orders():
  </BODY>
 </ENVELOPE>
     """
-    return safe_tally_request(xml_request, "VOUCHER")
+    return safe_tally_request(xml_request, "LEDGER")
+    return parse_tally_xml(response.text, "VOUCHER")
 
 def get_ledger_balances():
     xml_request = """

@@ -1,6 +1,12 @@
 import requests
+import os
+from dotenv import load_dotenv
 
-url = "http://192.168.64.2:9000"
+load_dotenv()
+
+TALLY_HOST = os.getenv("TALLY_HOST", "127.0.0.1")
+TALLY_PORT = os.getenv("TALLY_PORT", "9000")
+url = f"http://{TALLY_HOST}:{TALLY_PORT}"
 
 xml_request = """
 <ENVELOPE>
